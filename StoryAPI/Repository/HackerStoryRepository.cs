@@ -20,34 +20,45 @@ namespace StoryAPI.Repository
             return stuff;
         }
 
+        /// <summary>
+        ///     GetHackerStoriesByMemoryCache is a method to get Hacker Story List using Memory Cache if 
+        ///     data on cahce is available otherwise will get data from data source
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         public async Task<PagingParameterModel> GetHackerStoriesByMemoryCache(int pageSize)
         {
+            // parameter declaration
             var cacheKey = "storyist";
             var pageNumber = 1;
             PagingParameterModel paginationMetadata;
+            // if cache available
             if (_memoryCache.TryGetValue(cacheKey, out paginationMetadata))
             {
+            // if cache availabe but pagesize change by user action
                 if (pageSize != paginationMetadata.pageSize)
                 {
                     _memoryCache.Remove(cacheKey);
                 }
             }
+            //if cahce expired or not available then set new data into memory cache of PagingParameterModel(paginationMetadata) model
             if (!_memoryCache.TryGetValue(cacheKey, out paginationMetadata))
             {
-
+                // get data into PagingParameterModel (paginationMetadata)
                 paginationMetadata =
             await GetHackerStories(pageNumber, pageSize);
                 var cacheExpiryOptions = new MemoryCacheEntryOptions
                 {
                    AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(180),
-                    //AbsoluteExpiration = DateTime.Now.AddSeconds(300),
-                    //Priority = CacheItemPriority.High,
-                    //SlidingExpiration = TimeSpan.FromSeconds(20)
                 };
                 _memoryCache.Set(cacheKey, paginationMetadata, cacheExpiryOptions);
             }
             return (paginationMetadata);
         }
+
+        /// <summary>
+        /// GetHackerStories Method is to get Fresh Story Lists (PagingParameterModel) from Data Source
+        /// </summary>
         public async Task<PagingParameterModel> GetHackerStories(int pageNumber, int pageSize)
         {
 
@@ -87,29 +98,18 @@ namespace StoryAPI.Repository
                     // if TotalPages is greater than CurrentPage means it has nextPage  
                     var nextPage = CurrentPage < TotalPages ? "Yes" : "No";
 
-                    // Object which we are going to send in header   
-
-
-                    // Setting Header  
-                    //  HttpContext.Current.Response.Headers.Add("Paging-Headers", JsonConvert.SerializeObject(paginationMetadata));
                     var tasks = new List<Task<HackerStory>>();
 
-                    StringBuilder strappend = new StringBuilder();
-                 //   strappend.Append("[");
                     foreach (var item in items)
                     {
-                       
-                        using (var httpClient1 = new HttpClient())
-                        {
-                            tasks.Add(GetHackerStoryId(item.ToString()));
-                        }
+                        tasks.Add(GetHackerStoryId(item.ToString()));
                     }
 
                     foreach(var tsk in await Task.WhenAll(tasks))
                     {
                         storyList.Add(tsk);
                     }
-                   
+                   // set values in Moodel
                     paginationMetadata = new PagingParameterModel()
                     {
                         totalCount = TotalCount,
@@ -122,27 +122,23 @@ namespace StoryAPI.Repository
                     };
                 }
             }
-
-
             return (paginationMetadata);
         }
-     
 
+        /// <summary>
+        /// GetHackerStoryId Method is to get Fresh Story from Data Source by Id 
+        /// </summary>
         public async Task<HackerStory> GetHackerStoryId(string Id)
         {
             HackerStory hackerStory = null;
             using (var httpClient = new HttpClient())
             {
-                //StringBuilder strappend = new StringBuilder();
-               
                 var strUrl = "https://hacker-news.firebaseio.com/v0/item/" + Id.ToString() + ".json?print=pretty";
                 using (var response1 = await httpClient.GetAsync(strUrl))
                 {
                     string apiResponse1 = await response1.Content.ReadAsStringAsync();
                     hackerStory = JsonConvert.DeserializeObject<HackerStory>(apiResponse1);
-                }
-            // var  strFinal = strappend.ToString().Replace("{", "[").Replace("}", "]");
-                
+                }   
             }
             return (hackerStory);
         }

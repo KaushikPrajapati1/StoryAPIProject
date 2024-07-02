@@ -6,14 +6,11 @@ using StoryAPI.Repository;
 using System.Collections;
 using System.Text;
 using System.Text.Json.Nodes;
-//using System.Web.Http;
 
 namespace StoryAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    // [ApiVersion("2.0")]
-    //[Route("[controller]")]
     public class HackerStoryAPIController : ControllerBase
     {
         private IHackerStoryRepository hackerStoryRepository { get; set; }
@@ -34,9 +31,12 @@ namespace StoryAPI.Controllers
             var stuff = JsonConvert.DeserializeObject<List<T>>(SerializedJSONString);
             return stuff;
         }
-
+        /// <summary>
+        /// This method performs to Get Hacker Story List operation.
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
-        // [ActionName("Post02")]
         public async Task<PagingParameterModel> GetHackerStories(int pageSize)
         {
             PagingParameterModel paginationMetadata;
