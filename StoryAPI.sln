@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryAPI", "StoryAPI\StoryAPI.csproj", "{E67C6484-479A-4FD1-9593-5D37A45BD3B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryAPI", "StoryAPI\StoryAPI.csproj", "{E67C6484-479A-4FD1-9593-5D37A45BD3B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryTest", "StoryTest\StoryTest.csproj", "{9AF5E275-69B0-4B2C-BE9D-78484B10A966}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryTest", "StoryTest\StoryTest.csproj", "{9AF5E275-69B0-4B2C-BE9D-78484B10A966}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackerStoryBusinessLayer", "HackerStoryBusinessLayer\HackerStoryBusinessLayer.csproj", "{9DAE46DB-89C2-43FF-AADA-44E147BDC18C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9AF5E275-69B0-4B2C-BE9D-78484B10A966}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AF5E275-69B0-4B2C-BE9D-78484B10A966}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AF5E275-69B0-4B2C-BE9D-78484B10A966}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DAE46DB-89C2-43FF-AADA-44E147BDC18C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DAE46DB-89C2-43FF-AADA-44E147BDC18C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DAE46DB-89C2-43FF-AADA-44E147BDC18C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DAE46DB-89C2-43FF-AADA-44E147BDC18C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

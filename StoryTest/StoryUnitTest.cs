@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
-using StoryAPI;
-using StoryAPI.Repository;
+using HackerStoryBusinessLayer;
+using HackerStoryBusinessLayer.Repository;
 using System.Security.Cryptography;
 
 namespace StoryTest
@@ -10,57 +10,53 @@ namespace StoryTest
     public class StoryUnitTest
     {
 
-        
+
         private IHackerStoryRepository hackerStoryRepository { get; set; }
         public StoryUnitTest()
         {
-           
-        
+
+
         }
         [Fact]
         public void Test()
         {
 
             [Fact]
-            async void Task_GetHackerStories_Return_OkResult()
+            async Task Task_GetHackerStories_Return_OkResult()
             {
-                // Arrange
-
+                // arrange
                 var cache = new MemoryCache(new MemoryCacheOptions());
                 hackerStoryRepository = new HackerStoryRepository(cache);
-                var controller = new StoryAPI.Controllers.HackerStoryAPIController(hackerStoryRepository,cache);
+                var controller = new StoryAPI.Controllers.HackerStoryAPIController(hackerStoryRepository, cache);
 
-                //Act  
-                var data = await controller.GetHackerStories(5);
+                // act
+                var result = await controller.GetHackerStories(5);
+                var okResult = result as OkObjectResult;
 
-                //Assert  
-                Assert.IsType<StoryAPI.PagingParameterModel>(data);
-                Assert.Equal(1, data.pageNumber);
-                Assert.Equal(5, data.pageSize);
-               // Assert.Equal(500, data.totalCount);
+                // assert
+                Assert.NotNull(okResult);
+                Assert.Equal(200, okResult.StatusCode);
             }
-
             [Fact]
-            async void Task_GetHackerStories_Validate_MemorayCache()
+            async Task Task_GetHackerStories_Return_BadResult()
             {
-                //Arrange
+                // arrange
                 var cache = new MemoryCache(new MemoryCacheOptions());
                 hackerStoryRepository = new HackerStoryRepository(cache);
-                var controller = new StoryAPI.Controllers.HackerStoryAPIController(hackerStoryRepository,cache);
-                PagingParameterModel cacheresult;
-                //Act  
-             
-               
-                var data = await controller.GetHackerStories(5);
+                var controller = new StoryAPI.Controllers.HackerStoryAPIController(hackerStoryRepository, cache);
 
-                //Assert  
-                
-                cache.TryGetValue("storyist", out cacheresult);
-                Assert.Equal(cacheresult, data);
+                // act
+                var result = await controller.GetHackerStories(0);
+                var okResult = result as NotFoundResult;
+
+                // assert
+                Assert.NotNull(okResult);
+                Assert.Equal(404, okResult.StatusCode);
             }
+         
 
             [Fact]
-            void Task_GetHackerStories_Return_BadRequestResult()
+            void Task_GetHackerStories_Return_BadRequestResult1()
             {
                 //Arrange  
                 var cache = new MemoryCache(new MemoryCacheOptions());

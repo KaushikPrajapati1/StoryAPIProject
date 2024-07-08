@@ -26,12 +26,12 @@ namespace StoryAPI.Repository
         /// </summary>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<PagingParameterModel> GetHackerStoriesByMemoryCache(int pageSize)
+        public async Task<PagingParameterModel1> GetHackerStoriesByMemoryCache(int pageSize)
         {
             // parameter declaration
             var cacheKey = "storyist";
             var pageNumber = 1;
-            PagingParameterModel paginationMetadata;
+            PagingParameterModel1 paginationMetadata;
             // if cache available
             if (_memoryCache.TryGetValue(cacheKey, out paginationMetadata))
             {
@@ -59,7 +59,7 @@ namespace StoryAPI.Repository
         /// <summary>
         /// GetHackerStories Method is to get Fresh Story Lists (PagingParameterModel) from Data Source
         /// </summary>
-        public async Task<PagingParameterModel> GetHackerStories(int pageNumber, int pageSize)
+        public async Task<PagingParameterModel1> GetHackerStories(int pageNumber, int pageSize)
         {
 
             List<int> reservationList = new List<int>();
@@ -110,7 +110,7 @@ namespace StoryAPI.Repository
                         storyList.Add(tsk);
                     }
                    // set values in Moodel
-                    paginationMetadata = new PagingParameterModel()
+                    paginationMetadata = new PagingParameterModel1()
                     {
                         totalCount = TotalCount,
                         pageSize = PageSize,
