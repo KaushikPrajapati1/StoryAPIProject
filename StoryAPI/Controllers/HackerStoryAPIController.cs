@@ -2,15 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using StoryAPI.Repository;
+//using StoryAPI.Repository;
 using System.Collections;
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Web.Http;
+using HackerStoryBusinessLayer.Repository;
+using HackerStoryBusinessLayer.Model;
+using HackerStoryBusinessLayer.Entity;
+using IHackerStoryRepository = HackerStoryBusinessLayer.Repository.IHackerStoryRepository;
 
 namespace StoryAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]/[action]")]
     public class HackerStoryAPIController : ControllerBase
     {
         private IHackerStoryRepository hackerStoryRepository { get; set; }
@@ -26,24 +31,31 @@ namespace StoryAPI.Controllers
             _memoryCache = memoryCache;
         }
 
-        public List<T> Deserialize<T>(string SerializedJSONString)
-        {
-            var stuff = JsonConvert.DeserializeObject<List<T>>(SerializedJSONString);
-            return stuff;
-        }
         /// <summary>
         /// This method performs to Get Hacker Story List operation.
         /// </summary>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<PagingParameterModel> GetHackerStories(int pageSize)
+        [Microsoft.AspNetCore.Mvc.HttpGet]
+        public async Task<IActionResult> GetHackerStories(int pageSize)
         {
-            PagingParameterModel paginationMetadata;
-            paginationMetadata =
-        await hackerStoryRepository.GetHackerStoriesByMemoryCache(pageSize);
+            try
+            {
+                PagingParameterModel paginationMetadata;
+                paginationMetadata =
+            await hackerStoryRepository.GetHackerStoriesByMemoryCache(pageSize);
 
-            return (paginationMetadata);
+                if (paginationMetadata.pageSize == 0)
+                {
+                    return NotFound();
+                }
+                else
+                    return Ok(paginationMetadata);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
     }
